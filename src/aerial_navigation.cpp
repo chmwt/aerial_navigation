@@ -57,7 +57,7 @@ void GoalSending::activeCb() {
 
 void GoalSending::posWrite(const ros::TimerEvent& event){
     const geometry_msgs::Point &referee_pos = realtime_buffer_.readFromNonRT()->referee_pos_;
-    if(referee_pos.z - 's' < 1e-3){
+    if(fabs(referee_pos.z - 's') < 1e-3){
            robotStatePub(IDLE);
            idle();
            return;
