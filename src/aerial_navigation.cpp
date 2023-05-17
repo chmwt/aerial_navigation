@@ -77,7 +77,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
 
     if(fabs(referee_pos.z - 's') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
     {
-        robotStatePub(DEFENCE);
+        robotStatePub(CRUISR);
 
         Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
                   boost::bind(&GoalSending::activeCb, this),
@@ -91,7 +91,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
     }
     else
     {
-        robotStatePub(OUTPOST);
+        robotStatePub(MOVE);
 
         Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
                   boost::bind(&GoalSending::activeCb, this),

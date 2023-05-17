@@ -17,11 +17,9 @@ class GoalSending {
     private:
         #define max_vel_theta_ 10.0
         enum RobotState {
-            OUTPOST,
+            MOVE,
             CRUISR,
-            IDLE,
-            DEFENCE,
-            OUTPOST_NEXT
+            IDLE
         };
 
         Client Action;
