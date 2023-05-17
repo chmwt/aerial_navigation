@@ -39,7 +39,6 @@ void GoalSending::refereeCallback(const geometry_msgs::Point::ConstPtr& msg){
 }
 
 void GoalSending::robotStatePub(RobotState state_) {
-    // ROS_INFO_STREAM("state::" << state_);
     robot_msg::RobotStateMsg robot_state_msg;
     robot_state_msg.robot_state = static_cast<int8_t>(state_);
     robot_state_pub_.publish(robot_state_msg);
@@ -58,29 +57,42 @@ void GoalSending::activeCb() {
 
 void GoalSending::posWrite(const ros::TimerEvent& event){
     const geometry_msgs::Point &referee_pos = realtime_buffer_.readFromNonRT()->referee_pos_;
-    if(fabs(referee_pos.z - 's') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3){
-           robotStatePub(IDLE);
-           idle();
-           return;
+
+    target_pose_.header.frame_id = "world";
+    target_pose_.header.stamp = ros::Time::now();
+
+    target_pose_.pose.position.x = referee_pos.x;
+    target_pose_.pose.position.y = referee_pos.y;
+    target_pose_.pose.orientation.x = 0.0;
+    target_pose_.pose.orientation.y = 0.0;
+    target_pose_.pose.orientation.z = 1.0;
+    target_pose_.pose.orientation.w = 0.0;
+
+    goal_.target_pose = target_pose_;
+    
+    if (!Action.waitForServer(ros::Duration(60)))
+    {
+          ROS_INFO("Can't connected to move base server");
     }
-    if(target_pose_.pose.position.x != referee_pos.x && target_pose_.pose.position.y != referee_pos.y){
-        target_pose_.header.frame_id = "world";
-        target_pose_.header.stamp = ros::Time::now();
 
-        target_pose_.pose.position.x = referee_pos.x;
-        target_pose_.pose.position.y = referee_pos.y;
-        // ROS_INFO_STREAM("target_pose_::" << target_pose_.pose.position.x << " " << target_pose_.pose.position.y);
-        target_pose_.pose.orientation.x = 0.0;
-        target_pose_.pose.orientation.y = 0.0;
-        target_pose_.pose.orientation.z = 1.0;
-        target_pose_.pose.orientation.w = 0.0;
+    if(fabs(referee_pos.z - 's') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
+    {
+        robotStatePub(DEFENCE);
 
-        goal_.target_pose = target_pose_;
+        Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
+                  boost::bind(&GoalSending::activeCb, this),
+                  Client::SimpleFeedbackCallback());
 
-        if (!Action.waitForServer(ros::Duration(60))) {
-           ROS_INFO("Can't connected to move base server");
-        }
+        Action.waitForResult();
+
+        robotStatePub(IDLE);
+        idle();
+        return;
+    }
+    else
+    {
         robotStatePub(OUTPOST);
+
         Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
                   boost::bind(&GoalSending::activeCb, this),
                   Client::SimpleFeedbackCallback());
