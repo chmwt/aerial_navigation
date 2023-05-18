@@ -58,7 +58,19 @@ void GoalSending::activeCb() {
 void GoalSending::posWrite(const ros::TimerEvent& event){
     const geometry_msgs::Point &referee_pos = realtime_buffer_.readFromNonRT()->referee_pos_;
 
+    if (!Action.waitForServer(ros::Duration(60)))
+    {
+          ROS_INFO("Can't connected to move base server");
+    }
+    //判断相同点不执行
     if(target_pose_.pose.position.x == referee_pos.x && target_pose_.pose.position.y == referee_pos.y) return;
+    //原地小陀螺
+    if(fabs(referee_pos.z - 's') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
+    {
+        robotStatePub(IDLE);
+        idle();
+        return;
+    }
 
     target_pose_.header.frame_id = "world";
     target_pose_.header.stamp = ros::Time::now();
@@ -72,13 +84,10 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
 
     goal_.target_pose = target_pose_;
     
-    if (!Action.waitForServer(ros::Duration(60)))
+    
+    if(fabs(referee_pos.z - 'd') < 1e-3||fabs(referee_pos.z - 'D') < 1e-3)
     {
-          ROS_INFO("Can't connected to move base server");
-    }
-
-    if(fabs(referee_pos.z - 's') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
-    {
+        //小陀螺前进
         robotStatePub(CRUISR);
 
         Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
@@ -86,13 +95,11 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
                   Client::SimpleFeedbackCallback());
 
         //Action.waitForResult();
-
-        robotStatePub(IDLE);
-        idle();
         return;
     }
     else
     {
+        //普通速度前进
         robotStatePub(MOVE);
 
         Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
@@ -100,6 +107,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
                   Client::SimpleFeedbackCallback());
 
         //Action.waitForResult();
+        return;
     }
 }
 
