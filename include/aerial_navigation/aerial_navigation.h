@@ -15,7 +15,7 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> Client;
 
 class GoalSending {
     private:
-        #define max_vel_theta_ 10.0
+        #define max_vel_theta_ 4.0
         enum RobotState {
             MOVE,
             CRUISR,

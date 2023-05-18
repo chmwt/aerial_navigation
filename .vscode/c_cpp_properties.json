@@ -1,0 +1,32 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/rm/catkin_ws/devel/include/**",
+        "/home/rm/ws_livox2/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/rm/catkin_ws/src/aerial_navigation/include/**",
+        "/home/rm/catkin_ws/src/image_pipeline/depth_image_proc/include/**",
+        "/home/rm/catkin_ws/src/dstar_global_planner/include/**",
+        "/home/rm/catkin_ws/src/FAST_LIO/include/**",
+        "/home/rm/catkin_ws/src/image_pipeline/image_proc/include/**",
+        "/home/rm/catkin_ws/src/LiDAR_IMU_Init/include/**",
+        "/home/rm/catkin_ws/src/livox_camera_calib/include/**",
+        "/home/rm/catkin_ws/src/sentry_communicator/include/**",
+        "/home/rm/catkin_ws/src/image_pipeline/stereo_image_proc/include/**",
+        "/home/rm/catkin_ws/src/wit_node/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
