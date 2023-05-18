@@ -89,26 +89,23 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
     {
         //小陀螺前进
         robotStatePub(CRUISR);
-
-        Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
-                  boost::bind(&GoalSending::activeCb, this),
-                  Client::SimpleFeedbackCallback());
-
-        //Action.waitForResult();
-        return;
+    }
+    else if(fabs(referee_pos.z - 'a') < 1e-3||fabs(referee_pos.z - 'D') < 1e-3)
+    {
+        //快速前进
+        robotStatePub(FAST);
     }
     else
     {
         //普通速度前进
         robotStatePub(MOVE);
-
-        Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
+    }
+    Action.sendGoal(goal_, boost::bind(&GoalSending::doneCb, this, _1, _2),
                   boost::bind(&GoalSending::activeCb, this),
                   Client::SimpleFeedbackCallback());
 
-        //Action.waitForResult();
-        return;
-    }
+    //Action.waitForResult();
+    return;
 }
 
 int main(int argc, char** argv) {

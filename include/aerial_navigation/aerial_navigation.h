@@ -19,7 +19,8 @@ class GoalSending {
         enum RobotState {
             MOVE,
             CRUISR,
-            IDLE
+            IDLE,
+            FAST
         };
 
         Client Action;
