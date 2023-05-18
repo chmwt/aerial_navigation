@@ -58,6 +58,8 @@ void GoalSending::activeCb() {
 void GoalSending::posWrite(const ros::TimerEvent& event){
     const geometry_msgs::Point &referee_pos = realtime_buffer_.readFromNonRT()->referee_pos_;
 
+    if(target_pose_.pose.position.x == referee_pos.x && target_pose_.pose.position.y == referee_pos.y) return;
+
     target_pose_.header.frame_id = "world";
     target_pose_.header.stamp = ros::Time::now();
 
@@ -83,7 +85,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
                   boost::bind(&GoalSending::activeCb, this),
                   Client::SimpleFeedbackCallback());
 
-        Action.waitForResult();
+        //Action.waitForResult();
 
         robotStatePub(IDLE);
         idle();
@@ -97,7 +99,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
                   boost::bind(&GoalSending::activeCb, this),
                   Client::SimpleFeedbackCallback());
 
-        Action.waitForResult();
+        //Action.waitForResult();
     }
 }
 
