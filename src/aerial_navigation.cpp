@@ -32,6 +32,14 @@ void GoalSending::idle(){
       vel_pub_.publish(cmd_vel);
 }
 
+void GoalSending::stop(){
+      geometry_msgs::Twist cmd_vel;
+      cmd_vel.linear.x = 0;
+      cmd_vel.linear.y = 0;
+      cmd_vel.angular.z = 0;
+      vel_pub_.publish(cmd_vel);
+}
+
 void GoalSending::refereeCallback(const geometry_msgs::Point::ConstPtr& msg){
     //使用realtime_buffer保证接收
     Referee referee_struct_temp{.referee_pos_ = *msg, .stamp_ = ros::Time::now()};
@@ -71,6 +79,13 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
         idle();
         return;
     }
+    if (fabs(referee_pos.z - 'q') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
+    {
+        robotStatePub(STOP);
+        stop();
+        return;
+    }
+    
 
     target_pose_.header.frame_id = "world";
     target_pose_.header.stamp = ros::Time::now();

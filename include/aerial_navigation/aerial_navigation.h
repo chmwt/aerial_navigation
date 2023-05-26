@@ -15,12 +15,13 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> Client;
 
 class GoalSending {
     private:
-        #define max_vel_theta_ 4.0
+        #define max_vel_theta_ 8.0
         enum RobotState {
             MOVE,
             CRUISR,
             IDLE,
-            FAST
+            FAST,
+            STOP
         };
 
         Client Action;
@@ -65,6 +66,7 @@ class GoalSending {
                     const move_base_msgs::MoveBaseResultConstPtr& result);
 
         void idle();
+        void stop();
 
     public:
         GoalSending();
