@@ -79,7 +79,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
         idle();
         return;
     }
-    if (fabs(referee_pos.z - 'q') < 1e-3||fabs(referee_pos.z - 'S') < 1e-3)
+    if (fabs(referee_pos.z - 'q') < 1e-3||fabs(referee_pos.z - 'Q') < 1e-3)
     {
         robotStatePub(STOP);
         stop();
@@ -105,7 +105,7 @@ void GoalSending::posWrite(const ros::TimerEvent& event){
         //小陀螺前进
         robotStatePub(CRUISR);
     }
-    else if(fabs(referee_pos.z - 'a') < 1e-3||fabs(referee_pos.z - 'D') < 1e-3)
+    else if(fabs(referee_pos.z - 'a') < 1e-3||fabs(referee_pos.z - 'A') < 1e-3)
     {
         //快速前进
         robotStatePub(FAST);
